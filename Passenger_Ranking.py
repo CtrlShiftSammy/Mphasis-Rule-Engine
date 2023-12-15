@@ -59,4 +59,4 @@ def RankPassengers(DEP_KEY):
     rated_passengers_df = rate_passengers(ImpactedPassengers, rules_df)
 
     # Display the DataFrame with passenger ratings
-    print(rated_passengers_df)
+    return(rated_passengers_df)

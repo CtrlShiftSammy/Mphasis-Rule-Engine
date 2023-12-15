@@ -24,11 +24,11 @@ def rate_flights(CurrentFlight_Sched, AlternateFlight_Sched, rules_df):
 
     CurrentFlight_Sched['DepartureDateTime'] = pd.to_datetime(CurrentFlight_Sched['DepartureDateTime'])
     CurrentFlight_Sched['ArrivalDateTime'] = pd.to_datetime(CurrentFlight_Sched['ArrivalDateTime'])
-    CurrentFlight_Sched.sort_values(by=['DepartureDateTime'])
-
+    #CurrentFlight_Sched.sort_values(by=['DepartureDateTime'])
+    #CurrentFlight_Sched=CurrentFlight_Sched.sort_values(by='DepartureDateTime')
     AlternateFlight_Sched['DepartureDateTime'] = pd.to_datetime(AlternateFlight_Sched['DepartureDateTime'])
     AlternateFlight_Sched['ArrivalDateTime'] = pd.to_datetime(AlternateFlight_Sched['ArrivalDateTime'])
-    AlternateFlight_Sched.sort_values(by=['DepartureDateTime'])
+    #AlternateFlight_Sched.sort_values(by=['DepartureDateTime'])
 
     DIFF_ARR = (AlternateFlight_Sched['DepartureDateTime'].iloc[-1] - CurrentFlight_Sched['DepartureDateTime'].iloc[-1]).total_seconds()/3600
     DIFF_DEP = (AlternateFlight_Sched['ArrivalDateTime'].iloc[0] - CurrentFlight_Sched['ArrivalDateTime'].iloc[0]).total_seconds()/3600

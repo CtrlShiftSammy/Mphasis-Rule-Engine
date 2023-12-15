@@ -12,7 +12,7 @@ def returnFlight(DEP_KEY):
     # Check if there are any matching rows
     if not matching_rows.empty:
         # Return the first matching row
-        return matching_rows.iloc[0]
+        return matching_rows
     else:
         # If no matching rows found, return None
         return None
@@ -38,7 +38,8 @@ def MatchFlights(DEP_KEY):
         (FlightInventory_df['ArrivalAirport'] == arrival_airport) &
         (FlightInventory_df['DepartureAirport'] == departure_airport)
     ]
-
+    rules_file_path = 'Rules/rule_profile1/Flight_Scoring.csv'
+    rules_df = load_rules_from_file(rules_file_path)
     # print("Matched Flights:")
     # print(matched_flights_df[['InventoryId', 'FlightNumber', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime']])
     return(matched_flights_df)
