@@ -31,3 +31,5 @@ matched_flights_df = FlightInventory_df[
 
 print("Matched Flights:")
 print(matched_flights_df[['InventoryId', 'FlightNumber', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime']])
+
+
