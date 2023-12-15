@@ -9,9 +9,9 @@ PNR_Passenger_df = pd.read_csv(PNR_Passenger_csv)
 print(PNR_Passenger_df.head())
 
 #Identify impacted flights and passengers with the proposed schedule changes
-def returnImpactedPassengers(FLT_NUM):
+def returnImpactedPassengers(DEP_KEY):
     # Filter PNR_Booking_df based on FLT_NUM
-    impacted_booking_df = PNR_Booking_df[PNR_Booking_df['FLT_NUM'] == FLT_NUM]
+    impacted_booking_df = PNR_Booking_df[PNR_Booking_df['DEP_KEY'] == DEP_KEY]
 
     # Extract unique RECLOC values from the impacted booking DataFrame
     impacted_reclocs = impacted_booking_df['RECLOC'].unique()
@@ -26,9 +26,9 @@ def returnImpactedPassengers(FLT_NUM):
 
     return impacted_passenger_df
 
-print(returnImpactedPassengers(2504).head())
+print(returnImpactedPassengers('ZZ20240403BLRCCU2504').head())
 
-ImpactedPassengers = returnImpactedPassengers(2504)
+ImpactedPassengers = returnImpactedPassengers('ZZ20240403BLRCCU2504')
 
 def load_rules_from_file(file_path):
     # Implement logic to read rules from file (CSV, JSON, etc.)
