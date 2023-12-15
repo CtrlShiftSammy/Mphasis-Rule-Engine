@@ -84,7 +84,7 @@ def rate_flights(CurrentFlight_Sched, AlternateFlight_Sched, rules_df):
 def RateFlights(CurrentFlight_Sched, AlternateFlight_Sched):
     # ImpactedPassengers = returnImpactedPassengers(DEP_KEY)
 
-    rules_file_path = 'Rules/Flight_Scoring.csv'
+    rules_file_path = '/Users/anikeshparashar/Desktop/Inter-IIT/mphasis_dataset/Flight_Scoring.csv'
     # rules_file_path = 'Rules/rule_profile1/Flight_Scoring.csv'
     rules_df = load_rules_from_file(rules_file_path)
 
