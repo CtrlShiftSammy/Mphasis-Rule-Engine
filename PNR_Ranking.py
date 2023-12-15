@@ -4,13 +4,11 @@ PNR_Booking_csv = "Data/mphasis_dataset/PNRB-ZZ-20231208_062017.csv"
 PNR_Passenger_csv = "Data/mphasis_dataset/PNRP-ZZ-20231208_111136.csv"
 
 PNR_Booking_df = pd.read_csv(PNR_Booking_csv)
-print(PNR_Booking_df.head())
 PNR_Passenger_df = pd.read_csv(PNR_Passenger_csv)
-print(PNR_Passenger_df.head())
 
 #Identify impacted flights and passengers with the proposed schedule changes
 def returnImpactedPassengers(DEP_KEY):
-    # Filter PNR_Booking_df based on FLT_NUM
+    # Filter PNR_Booking_df based on DEP_KEY
     impacted_booking_df = PNR_Booking_df[PNR_Booking_df['DEP_KEY'] == DEP_KEY]
 
     # Extract unique RECLOC values from the impacted booking DataFrame
@@ -25,10 +23,6 @@ def returnImpactedPassengers(DEP_KEY):
     impacted_passenger_df['DL_Conn'] = impacted_passenger_df['SEG_TOTAL'] - impacted_passenger_df['SEG_SEQ']
 
     return impacted_passenger_df
-
-print(returnImpactedPassengers('ZZ20240403BLRCCU2504').head())
-
-ImpactedPassengers = returnImpactedPassengers('ZZ20240403BLRCCU2504')
 
 def load_rules_from_file(file_path):
     # Implement logic to read rules from file (CSV, JSON, etc.)
@@ -53,15 +47,16 @@ def rate_passengers(df, rules_df):
         df.loc[mask, 'Passenger_Rating'] += rating * ( 1 if (var == '.') else df[var])
     return df
 
-# Example usage:
-# Assuming PNR_Passenger_df is the DataFrame containing PNR passenger information
-# Replace 'your_rules_file_path.csv' with the actual path to your rules file
-rules_file_path = 'Rules/rule_profile1/PNR_Rating.csv'
-rules_df = load_rules_from_file(rules_file_path)
 
-# Call the function to rate passengers
-rated_passengers_df = rate_passengers(ImpactedPassengers, rules_df)
 
-# Display the DataFrame with passenger ratings
-print(rated_passengers_df.head(100))
+def RankPassengers(DEP_KEY):
+    ImpactedPassengers = returnImpactedPassengers(DEP_KEY)
 
+    rules_file_path = 'Rules/rule_profile1/PNR_Rating.csv'
+    rules_df = load_rules_from_file(rules_file_path)
+
+    # Call the function to rate passengers
+    rated_passengers_df = rate_passengers(ImpactedPassengers, rules_df)
+
+    # Display the DataFrame with passenger ratings
+    print(rated_passengers_df)
