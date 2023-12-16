@@ -1,2 +1,4 @@
-Conditions,Rating
-ETD > 72,False
+Variable,Value
+MAX_DEPARTURE_DELAY,72
+MAX_DOWNLINE_GAP,12
+MIN_DOWNLINE_GAP,1
