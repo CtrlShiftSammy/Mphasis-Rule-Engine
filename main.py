@@ -28,4 +28,5 @@ for index, row in matched_flights_df.iterrows():
     #print(row_df)
 
 # Print the updated DataFrame with the 'Rating' column
+print('matched flights:')
 print(matched_flights_df[['InventoryId', 'FlightNumber', 'Dep_Key', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime', 'Rating']])

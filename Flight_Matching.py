@@ -1,4 +1,5 @@
 import pandas as pd
+from Passenger_Ranking import load_rules_from_file
 
 FlightInventory_csv = "Data/mphasis_dataset/INV-ZZ-20231208_041852.csv"
 FlightSchedule_csv = "Data/mphasis_dataset/SCH-ZZ-20231208_035117.csv"
