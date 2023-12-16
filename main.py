@@ -1,4 +1,5 @@
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
 
 from Passenger_Ranking import RankPassengers
 from Flight_Matching import MatchFlights
@@ -26,8 +27,8 @@ for index, row in matched_flights_df.iterrows():
     flight_selection_rules_df = load_rules_from_file('Rules/rule_profile1/Flight_Selection.csv')
     row_df = pd.DataFrame([list(row)], columns=matched_flights_df.columns)
     rating = rate_flights(CancelledFlightINV,row_df,flight_scoring_rules_df)  # Pass the flight information to the function
-    if (select_flight(CancelledFlightINV, row_df, find_downline_connections(CancelledFlightDep_Key), flight_selection_rules_df)):
-        matched_flights_df.loc[index, 'Rating'] = rating
+    print (select_flight(CancelledFlightINV, row_df, find_downline_connections(CancelledFlightDep_Key), flight_selection_rules_df))
+        #matched_flights_df.loc[index, 'Rating'] = rating
     #print(CancelledFlightINV)
     #print(row_df)
 

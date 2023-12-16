@@ -34,7 +34,7 @@ def select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df):
     for index, rule in rules_df.iterrows():
         # Extract rule conditions and rating
         variable = rule['Variable']
-        value = eval(rule['Value'])
+        value = int(rule['Value'])
         constraints[variable] = value
     
     DIFF_DEP = (AlterFlight_Sched['ArrivalDateTime'].iloc[0] - ChangedFlight_Sched['ArrivalDateTime'].iloc[0]).total_seconds()/3600
@@ -49,10 +49,10 @@ def select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df):
             return False
     
     if nextFlight is not None:
-        nextFlight['DepartureDateTime'] = pd.to_datetime(nextFlight['DepartureDateTime'])
-        nextFlight['ArrivalDateTime'] = pd.to_datetime(nextFlight['ArrivalDateTime'])
-        nextFlight.sort_values(by=['DepartureDateTime'])
-        diff = (nextFlight['DepartureDateTime'].iloc[0] - AlterFlight_Sched['ArrivalDateTime'].iloc[-1]).total_seconds()/3600
+        # print(nextFlight)
+        nextFlight['DEP_DTML'] = pd.to_datetime(nextFlight['DEP_DTML'])
+        nextFlight.sort_values(by=['DEP_DTML'])
+        diff = (nextFlight['DEP_DTML'].iloc[0] - AlterFlight_Sched['ArrivalDateTime'].iloc[-1]).total_seconds()/3600
         if constraints['MAX_DOWNLINE_GAP']>=diff>=constraints['MIN_DOWNLINE_GAP']:
             pass
         else:
