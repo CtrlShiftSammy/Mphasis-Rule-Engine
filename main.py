@@ -9,10 +9,14 @@ from Flight_Selection import *
 from Solution_Calc import *
 
 CancelledFlightDep_Key = 'ZZ20240515AMDHYD2223'
-ranked_passengers_df = RankPassengers(CancelledFlightDep_Key)
+ruleProfile = 'rule_profile1'
+
+ranked_passengers_df = RankPassengers(CancelledFlightDep_Key, ruleProfile)
+print("Cancelled Flight DEP_KEY = ", CancelledFlightDep_Key)
+print("Using Agent Rule Profile = ", ruleProfile)
 
 print("Ranking Passengers...")
-ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key)
+ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key, ruleProfile)
 columns = ['InventoryId', 'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Flight_Rating']
 
 print("Calculating and Ranking Alternate Flights...")

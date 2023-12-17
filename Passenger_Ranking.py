@@ -50,10 +50,10 @@ def rate_passengers(df, rules_df):
 
 
 
-def RankPassengers(DEP_KEY):
+def RankPassengers(DEP_KEY, ruleProfile):
     ImpactedPassengers = returnImpactedPassengers(DEP_KEY)
 
-    rules_file_path = 'Rules/rule_profile1/PNR_Rating.csv'
+    rules_file_path = 'Rules/'+ruleProfile+'/PNR_Rating.csv'
     rules_df = load_rules_from_file(rules_file_path)
 
     # Call the function to rate passengers

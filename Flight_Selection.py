@@ -106,8 +106,8 @@ def SelectFlight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight): # If there
     score = select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df)
     return score
 
-def find_downline_connections(DEP_KEY):
-    rated_passengers_df = RankPassengers(DEP_KEY)
+def find_downline_connections(DEP_KEY, ruleProfile):
+    rated_passengers_df = RankPassengers(DEP_KEY, ruleProfile)
     passenger_row = rated_passengers_df[rated_passengers_df['DEP_KEY'].astype(str).str.startswith(DEP_KEY)]
 
     if not passenger_row.empty:

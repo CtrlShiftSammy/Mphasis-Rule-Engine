@@ -28,7 +28,7 @@ def returnFlight(DEP_KEY):
         # If no matching rows found, return None
         return None
 
-def MatchFlights(DEP_KEY):
+def MatchFlights(DEP_KEY,ruleProfile):
 # Filter FlightInventory_df for the given DEP_KEY
     flight_inventory_row = FlightInventory_df[FlightInventory_df['Dep_Key'].astype(str).str.startswith(DEP_KEY)]
     
@@ -41,16 +41,16 @@ def MatchFlights(DEP_KEY):
         (FlightInventory_df['DepartureAirport'] == departure_airport)
     ]
 
-    rules_file_path = 'Rules/rule_profile1/Flight_Scoring.csv'
+    rules_file_path = 'Rules/'+ruleProfile+'/Flight_Scoring.csv'
     rules_df = load_rules_from_file(rules_file_path)
     # print("Matched Flights:")
     #print(matched_flights_df[['InventoryId', 'FlightNumber', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime']])
     return(matched_flights_df)
 
-def returnmMatchedRankedFlights(DEP_KEY):
-    ranked_passengers_df = RankPassengers(DEP_KEY)
+def returnmMatchedRankedFlights(DEP_KEY, ruleProfile):
+    ranked_passengers_df = RankPassengers(DEP_KEY, ruleProfile)
     #print(ranked_passengers_df)
-    matched_flights_df = MatchFlights(DEP_KEY)
+    matched_flights_df = MatchFlights(DEP_KEY, ruleProfile)
     #print(matched_flights_df)
 
     CancelledFlightINV = returnFlight(DEP_KEY)
@@ -63,12 +63,12 @@ def returnmMatchedRankedFlights(DEP_KEY):
     # Iterate through each row and fill the 'Rating' column
     for index, row in matched_flights_df.iterrows():
         # Assuming RateFlights is a function that takes flight information and returns a rating
-        flight_scoring_rules_df = load_rules_from_file('Rules/rule_profile1/Flight_Scoring.csv')
-        flight_selection_rules_df = load_rules_from_file('Rules/rule_profile1/Flight_Selection.csv')
+        flight_scoring_rules_df = load_rules_from_file('Rules/'+ruleProfile+'/Flight_Scoring.csv')
+        flight_selection_rules_df = load_rules_from_file('Rules/'+ruleProfile+'/Flight_Selection.csv')
         row_df = pd.DataFrame([list(row)], columns=matched_flights_df.columns)
         rating = rate_flights(CancelledFlightINV, row_df, flight_scoring_rules_df)  # Pass the flight information to the function
         
-        if select_flight(CancelledFlightINV, row_df, find_downline_connections(DEP_KEY), flight_selection_rules_df):
+        if select_flight(CancelledFlightINV, row_df, find_downline_connections(DEP_KEY, ruleProfile), flight_selection_rules_df):
             selected_flights_df = pd.concat([selected_flights_df, row_df], ignore_index=True)
             matched_flights_df.loc[insert_index, 'Flight_Rating'] = rating
             selected_flights_df.loc[insert_index, 'Flight_Rating'] = rating
