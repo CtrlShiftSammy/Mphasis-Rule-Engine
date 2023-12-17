@@ -12,7 +12,8 @@ ranked_passengers_df = RankPassengers(CancelledFlightDep_Key)
 #print(ranked_passengers_df)
 
 ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key)
-print(ranked_flights_df)
+columns = ['InventoryId', 'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Rating']
+print(ranked_flights_df[columns])
 
 solution_df = returnSolution(ranked_passengers_df, ranked_flights_df, upgrade_class=True, downgrade_class=False)
 

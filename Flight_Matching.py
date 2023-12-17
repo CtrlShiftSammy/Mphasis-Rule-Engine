@@ -72,4 +72,4 @@ def returnmMatchedRankedFlights(DEP_KEY):
             selected_flights_df = pd.concat([selected_flights_df, row_df], ignore_index=True)
 
     #print(matched_flights_df[['InventoryId', 'FlightNumber', 'Dep_Key', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime', 'Rating']])
-    return(matched_flights_df)
+    return(selected_flights_df)
