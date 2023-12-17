@@ -9,6 +9,7 @@ PNR_Passenger_df = pd.read_csv(PNR_Passenger_csv)
 #Identify impacted flights and passengers with the proposed schedule changes
 def returnImpactedPassengers(DEP_KEY):
     # Filter PNR_Booking_df based on DEP_KEY
+
     impacted_booking_df = PNR_Booking_df[PNR_Booking_df['DEP_KEY'] == DEP_KEY]
 
     # Extract unique RECLOC values from the impacted booking DataFrame

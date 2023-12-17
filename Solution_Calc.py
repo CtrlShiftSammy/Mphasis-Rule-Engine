@@ -115,6 +115,7 @@ def produce_solution_fileset(ranked_passengers_df, ranked_flights_df, solution_d
     # Create the directory if it doesn't exist
     if not os.path.exists(results_directory):
         os.makedirs(results_directory)
+    print("Saving Solution Filesets in directory ",results_directory)
 
     # Store dataframes in CSV files
     ranked_passengers_df.to_csv(os.path.join(results_directory, 'ranked_passengers.csv'), index=False)
@@ -122,4 +123,6 @@ def produce_solution_fileset(ranked_passengers_df, ranked_flights_df, solution_d
     solution_df.to_csv(os.path.join(results_directory, 'solution.csv'), index=False)
     reaccomodation_df.to_csv(os.path.join(results_directory, 'reaccomodation.csv'), index=False)
     unreaccommodated_passengers_df.to_csv(os.path.join(results_directory, 'exception.csv'), index=False)
+    print("Number of reaccommodated passengers = ", len(reaccomodation_df))
+    print("Number of unreaccommodated passengers = ", len(unreaccommodated_passengers_df))
 
