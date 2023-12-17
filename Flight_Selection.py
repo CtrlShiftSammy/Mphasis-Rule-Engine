@@ -23,6 +23,45 @@ def load_rules_from_file(file_path):
 def select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df):
     ChangedFlight_Sched['DepartureDateTime'] = pd.to_datetime(ChangedFlight_Sched['DepartureDateTime'])
     ChangedFlight_Sched['ArrivalDateTime'] = pd.to_datetime(ChangedFlight_Sched['ArrivalDateTime'])
+    ChangedFlight_Sched = ChangedFlight_Sched.sort_values(by=['DepartureDateTime'])
+    
+    AlterFlight_Sched['DepartureDateTime'] = pd.to_datetime(AlterFlight_Sched['DepartureDateTime'])
+    AlterFlight_Sched['ArrivalDateTime'] = pd.to_datetime(AlterFlight_Sched['ArrivalDateTime'])
+    AlterFlight_Sched = AlterFlight_Sched.sort_values(by=['DepartureDateTime'])
+
+    constraints = {'MAX_DEPARTURE_DELAY': float('inf'), 'MAX_DOWNLINE_GAP': float('inf'), 'MIN_DOWNLINE_GAP': 0}
+
+    for index, rule in rules_df.iterrows():
+        # Extract rule conditions and rating
+        variable = rule['Variable']
+        value = int(rule['Value'])
+        constraints[variable] = value
+    
+    DIFF_DEP = (AlterFlight_Sched['ArrivalDateTime'].iloc[0] - ChangedFlight_Sched['ArrivalDateTime'].iloc[0]).total_seconds()/3600
+    #print(DIFF_DEP, AlterFlight_Sched['ArrivalDateTime'].iloc[0], ChangedFlight_Sched['ArrivalDateTime'].iloc[0])
+    #print(DIFF_DEP, constraints['MAX_DEPARTURE_DELAY'])
+    if DIFF_DEP > constraints['MAX_DEPARTURE_DELAY']:
+        return False
+    
+    for i in range(1, AlterFlight_Sched.shape[0]):
+        diff =(AlterFlight_Sched['DepartureDateTime'].iloc[i] - AlterFlight_Sched['ArrivalDateTime'].iloc[i-1]).total_seconds()/3600
+        if constraints['MAX_DOWNLINE_GAP'] >= diff >= constraints['MIN_DOWNLINE_GAP']:
+            pass
+        else:
+            return False
+    
+    if nextFlight is not None:
+        nextFlight['DEP_DTML'] = pd.to_datetime(nextFlight['DEP_DTML'])
+        nextFlight = nextFlight.sort_values(by=['DEP_DTML'])
+        diff = (nextFlight['DEP_DTML'].iloc[0] - AlterFlight_Sched['ArrivalDateTime'].iloc[-1]).total_seconds()/3600
+        if constraints['MAX_DOWNLINE_GAP'] >= diff >= constraints['MIN_DOWNLINE_GAP']:
+            pass
+        else:
+            return False
+
+    return True
+    ChangedFlight_Sched['DepartureDateTime'] = pd.to_datetime(ChangedFlight_Sched['DepartureDateTime'])
+    ChangedFlight_Sched['ArrivalDateTime'] = pd.to_datetime(ChangedFlight_Sched['ArrivalDateTime'])
     ChangedFlight_Sched.sort_values(by=['DepartureDateTime'])
     
     AlterFlight_Sched['DepartureDateTime'] = pd.to_datetime(AlterFlight_Sched['DepartureDateTime'])
@@ -94,3 +133,4 @@ def find_downline_connections(DEP_KEY):
             return None
     else:
         return None
+

@@ -1,4 +1,8 @@
 import pandas as pd
+from Passenger_Ranking import *
+from Flight_Matching import *
+from Flight_Ranking import *
+from Flight_Selection import *
 
 FlightInventory_csv = "Data/mphasis_dataset/INV-ZZ-20231208_041852.csv"
 FlightSchedule_csv = "Data/mphasis_dataset/SCH-ZZ-20231208_035117.csv"
@@ -38,6 +42,34 @@ def MatchFlights(DEP_KEY):
     rules_file_path = 'Rules/rule_profile1/Flight_Scoring.csv'
     rules_df = load_rules_from_file(rules_file_path)
     # print("Matched Flights:")
-    print(matched_flights_df[['InventoryId', 'FlightNumber', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime']])
+    #print(matched_flights_df[['InventoryId', 'FlightNumber', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime']])
     return(matched_flights_df)
 
+def returnmMatchedRankedFlights(DEP_KEY):
+    ranked_passengers_df = RankPassengers(DEP_KEY)
+    #print(ranked_passengers_df)
+    matched_flights_df = MatchFlights(DEP_KEY)
+    #print(matched_flights_df)
+
+    CancelledFlightINV = returnFlight(DEP_KEY)
+
+# Add a new column 'Rating' to the matched_flights_df
+    matched_flights_df['Rating'] = 0
+
+    selected_flights_df = pd.DataFrame(columns=matched_flights_df.columns)
+
+    # Iterate through each row and fill the 'Rating' column
+    for index, row in matched_flights_df.iterrows():
+        # Assuming RateFlights is a function that takes flight information and returns a rating
+        flight_scoring_rules_df = load_rules_from_file('Rules/rule_profile1/Flight_Scoring.csv')
+        flight_selection_rules_df = load_rules_from_file('Rules/rule_profile1/Flight_Selection.csv')
+        row_df = pd.DataFrame([list(row)], columns=matched_flights_df.columns)
+        rating = rate_flights(CancelledFlightINV, row_df, flight_scoring_rules_df)  # Pass the flight information to the function
+        
+        if select_flight(CancelledFlightINV, row_df, find_downline_connections(DEP_KEY), flight_selection_rules_df):
+            matched_flights_df.loc[index, 'Rating'] = rating
+            #print(rating)
+            selected_flights_df = pd.concat([selected_flights_df, row_df], ignore_index=True)
+
+    #print(matched_flights_df[['InventoryId', 'FlightNumber', 'Dep_Key', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime', 'Rating']])
+    return(matched_flights_df)

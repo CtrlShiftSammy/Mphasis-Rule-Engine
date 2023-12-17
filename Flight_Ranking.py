@@ -7,11 +7,6 @@ PNR_Passenger_csv = "Data/mphasis_dataset/PNRP-ZZ-20231208_111136.csv"
 INV_Flight_csv = "Data/mphasis_dataset/INV-ZZ-20231208_041852.csv"
 SCH_Flight_csv = "SCH-ZZ-20231208_035117.csv"
 
-def load_rules_from_file(file_path):
-    # Implement logic to read rules from file (CSV, JSON, etc.)
-    # Return a DataFrame with rules
-    rules_df = pd.read_csv(file_path)  # Update this line based on your file format
-    return rules_df
 
 def unique_sorted_dataframe(df):
     # Returns unique values in a dataframe column as a numpy array
