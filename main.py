@@ -5,6 +5,7 @@ from Passenger_Ranking import RankPassengers
 from Flight_Matching import *
 from Flight_Ranking import *
 from Flight_Selection import *
+from Solution_Calc import *
 
 CancelledFlightDep_Key = 'ZZ20240602AMDHYD2223'
 ranked_passengers_df = RankPassengers(CancelledFlightDep_Key)

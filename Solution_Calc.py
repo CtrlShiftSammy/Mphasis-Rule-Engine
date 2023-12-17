@@ -49,3 +49,5 @@ def create_weighted_bipartite_graph(passengers, flights, upgrade_class=False, do
     flights=seat_type_flight_revert(flights)
     
     return G
+
+def(passengers, flights, upgrade_class=False, downgrade_class=False):
