@@ -78,10 +78,3 @@ def returnmMatchedRankedFlights(DEP_KEY):
     #print(matched_flights_df[['InventoryId', 'FlightNumber', 'Dep_Key', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime', 'Rating']])
     return(selected_flights_df)
 
-def get_next_fileset_directory(base_directory='Results'):
-    fileset_directories = [d for d in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, d)) and d.startswith('SolutionFileset')]
-    if not fileset_directories:
-        return os.path.join(base_directory, 'SolutionFileset1')
-    else:
-        latest_fileset = max(map(lambda x: int(x.split('SolutionFileset')[-1]), fileset_directories))
-        return os.path.join(base_directory, f'SolutionFileset{latest_fileset + 1}')

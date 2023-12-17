@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 def seat_type_passenger(seattype):
     if seattype == "BusinessClass":
@@ -96,5 +97,29 @@ def find_unreaccommodated_passengers(ranked_passengers_df, reaccommodation_df):
     # Filter ranked passengers DataFrame for those not in the reaccommodated set
     unreaccommodated_passengers_df = ranked_passengers_df[~ranked_passengers_df['CUSTOMER_ID'].isin(reaccommodated_passengers)]
 
+
     return unreaccommodated_passengers_df
+
+def get_next_fileset_directory(base_directory='Results'):
+    fileset_directories = [d for d in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, d)) and d.startswith('SolutionFileset')]
+    if not fileset_directories:
+        return os.path.join(base_directory, 'SolutionFileset1')
+    else:
+        latest_fileset = max(map(lambda x: int(x.split('SolutionFileset')[-1]), fileset_directories))
+        return os.path.join(base_directory, f'SolutionFileset{latest_fileset + 1}')
+
+def produce_solution_fileset(ranked_passengers_df, ranked_flights_df, solution_df, reaccomodation_df, unreaccommodated_passengers_df):
+    # Get the next fileset directory
+    results_directory = get_next_fileset_directory()
+
+    # Create the directory if it doesn't exist
+    if not os.path.exists(results_directory):
+        os.makedirs(results_directory)
+
+    # Store dataframes in CSV files
+    ranked_passengers_df.to_csv(os.path.join(results_directory, 'ranked_passengers.csv'), index=False)
+    ranked_flights_df.to_csv(os.path.join(results_directory, 'ranked_flights.csv'), index=False)
+    solution_df.to_csv(os.path.join(results_directory, 'solution.csv'), index=False)
+    reaccomodation_df.to_csv(os.path.join(results_directory, 'reaccomodation.csv'), index=False)
+    unreaccommodated_passengers_df.to_csv(os.path.join(results_directory, 'exception.csv'), index=False)
 
