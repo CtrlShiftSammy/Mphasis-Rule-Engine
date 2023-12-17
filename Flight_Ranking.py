@@ -73,7 +73,7 @@ def rate_flights(CurrentFlight_Sched, AlternateFlight_Sched, rules_df):
         # Assign rating to passengers meeting the conditions
         score += rating * mask
         # print(index)
-        
+    #print(score)   
     return score
 
 def RateFlights(CurrentFlight_Sched, AlternateFlight_Sched):

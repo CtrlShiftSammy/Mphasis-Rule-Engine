@@ -1,4 +1,6 @@
 import pandas as pd
+import os
+
 from Passenger_Ranking import *
 from Flight_Matching import *
 from Flight_Ranking import *
@@ -53,11 +55,11 @@ def returnmMatchedRankedFlights(DEP_KEY):
 
     CancelledFlightINV = returnFlight(DEP_KEY)
 
-# Add a new column 'Rating' to the matched_flights_df
-    matched_flights_df['Rating'] = 0
+    # Add a new column 'Rating' to the matched_flights_df
+    matched_flights_df['Flight_Rating'] = 0
 
     selected_flights_df = pd.DataFrame(columns=matched_flights_df.columns)
-
+    insert_index = 0
     # Iterate through each row and fill the 'Rating' column
     for index, row in matched_flights_df.iterrows():
         # Assuming RateFlights is a function that takes flight information and returns a rating
@@ -67,9 +69,19 @@ def returnmMatchedRankedFlights(DEP_KEY):
         rating = rate_flights(CancelledFlightINV, row_df, flight_scoring_rules_df)  # Pass the flight information to the function
         
         if select_flight(CancelledFlightINV, row_df, find_downline_connections(DEP_KEY), flight_selection_rules_df):
-            matched_flights_df.loc[index, 'Rating'] = rating
-            #print(rating)
             selected_flights_df = pd.concat([selected_flights_df, row_df], ignore_index=True)
+            matched_flights_df.loc[insert_index, 'Flight_Rating'] = rating
+            selected_flights_df.loc[insert_index, 'Flight_Rating'] = rating
+            insert_index = insert_index + 1
+            #print(rating)
 
     #print(matched_flights_df[['InventoryId', 'FlightNumber', 'Dep_Key', 'DepartureAirport', 'ArrivalAirport', 'AircraftType','DepartureDate','DepartureDateTime','ArrivalDateTime', 'Rating']])
     return(selected_flights_df)
+
+def get_next_fileset_directory(base_directory='Results'):
+    fileset_directories = [d for d in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, d)) and d.startswith('SolutionFileset')]
+    if not fileset_directories:
+        return os.path.join(base_directory, 'SolutionFileset1')
+    else:
+        latest_fileset = max(map(lambda x: int(x.split('SolutionFileset')[-1]), fileset_directories))
+        return os.path.join(base_directory, f'SolutionFileset{latest_fileset + 1}')

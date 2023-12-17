@@ -42,7 +42,7 @@ def create_weighted_bipartite_graph(passengers, flights, upgrade_class=False, do
                 for _, passenger in passengers.iterrows():
                     passenger['COS_CD'] = seat_type_passenger(passenger['COS_CD'])
                     if (passenger['COS_CD'] == seat_type)or ( ( ((passenger['COS_CD']=='A')or(passenger['COS_CD']=='B'))and((seat_type=='C') or ((seat_type=='D'))) )and downgrade_class) or ( ( ((passenger['COS_CD']=='D'))and((seat_type=='A') or ((seat_type=='B'))) )and upgrade_class) :
-                        edge_weight = passenger['Passenger_Rating'] + flight['Rating']
+                        edge_weight = passenger['Passenger_Rating'] + flight['Flight_Rating']
                         G.add_edge(passenger['CUSTOMER_ID'], seat_name, weight=edge_weight)
                         
                         
@@ -82,11 +82,19 @@ def add_details_columns(input_df, customer_details_df, flight_details_df):
     # Select and reorder columns
     selected_columns = [
         'CUSTOMER_ID', 'LAST_NAME', 'FIRST_NAME', 'CONTACT_PH_NUM', 'CONTACT_EMAIL', 'FlightNumber', 'Seat', 'InventoryId', 
-        'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Passenger_Rating', 'Rating'
+        'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Passenger_Rating', 'Flight_Rating'
     ]
     
     result_df = result_df[selected_columns]
 
     return result_df
 
+def find_unreaccommodated_passengers(ranked_passengers_df, reaccommodation_df):
+    # Extract CUSTOMER_IDs from the reaccommodation DataFrame
+    reaccommodated_passengers = set(reaccommodation_df['CUSTOMER_ID'])
+
+    # Filter ranked passengers DataFrame for those not in the reaccommodated set
+    unreaccommodated_passengers_df = ranked_passengers_df[~ranked_passengers_df['CUSTOMER_ID'].isin(reaccommodated_passengers)]
+
+    return unreaccommodated_passengers_df
 
