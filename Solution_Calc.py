@@ -35,7 +35,7 @@ def create_weighted_bipartite_graph(passengers, flights, upgrade_class=False, do
     for _, flight in flights.iterrows():
         for seat_type in ["A", "B", "C", "D"]:
             for seat_number in range(1, flight[seat_type] + 1):
-                seat_name = f"{flight['FlightNumber']}_{seat_type}{seat_number}"
+                seat_name = f"{flight['FlightNumber']}_{seat_type}{seat_number}_{flight['InventoryId']}"
                 G.add_node(seat_name, bipartite=1, seat_type=seat_type)  # bipartite=1 represents seats
 
                 # Add edges with weights equal to the sum of passenger and flight scores
@@ -56,53 +56,37 @@ def returnSolution(passengers, flights, upgrade_class=False, downgrade_class=Fal
 
 def returnSolution_df(output_dict):
     # Create an empty DataFrame with the desired columns
-    columns = ['FlightNumber', 'Seat', 'CUSTOMER_ID']
+    columns = ['FlightNumber', 'Seat', 'InventoryId', 'CUSTOMER_ID']
     result_df = pd.DataFrame(columns=columns)
-
     # Iterate through the dictionary and append rows to the DataFrame
     for key1, key2 in output_dict:
         # Determine which key is 'FlightNumber' and which is 'CUSTOMER_ID'
         if key1[0].isalpha():
-            flight_number, seat, customer_id = key2.split('.0_')[0], key2.split('_')[1], key1
+            flight_number, seat, inventory_id , customer_id= key2.split('_')[0], key2.split('_')[1], key2.split('_')[2], key1
         else:
-            flight_number, seat, customer_id = key1.split('.0_')[0], key1.split('_')[1], key2
+            flight_number, seat, inventory_id , customer_id = key1.split('_')[0], key1.split('_')[1], key1.split('_')[2], key2
 
         # Append the row to the DataFrame
-        result_df = pd.concat([result_df, pd.DataFrame([{'FlightNumber': flight_number, 'Seat': seat, 'CUSTOMER_ID': customer_id}])], ignore_index=True)
+        result_df = pd.concat([result_df, pd.DataFrame([{'FlightNumber': flight_number, 'Seat': seat, 'InventoryId': inventory_id, 'CUSTOMER_ID': customer_id}])], ignore_index=True)
+    #Solution_df = add_details_columns(result_df)
+    return result_df
+
+
+def add_details_columns(input_df, customer_details_df, flight_details_df):
+    # Merge the input DataFrame with flight details on 'InventoryId'
+    merged_df = pd.merge(input_df, flight_details_df, how='left', left_on='InventoryId', right_on='InventoryId', suffixes=('_flight', ''))
+
+    # Merge the merged DataFrame with customer details on 'CUSTOMER_ID'
+    result_df = pd.merge(merged_df, customer_details_df, how='left', left_on='CUSTOMER_ID', right_on='CUSTOMER_ID', suffixes=('_customer', ''))
+
+    # Select and reorder columns
+    selected_columns = [
+        'CUSTOMER_ID', 'LAST_NAME', 'FIRST_NAME', 'CONTACT_PH_NUM', 'CONTACT_EMAIL', 'FlightNumber', 'Seat', 'InventoryId', 
+        'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Passenger_Rating', 'Rating'
+    ]
+    
+    result_df = result_df[selected_columns]
 
     return result_df
-    # Create an empty DataFrame with the desired columns
-    columns = ['FlightNumber', 'Seat', 'CUSTOMER_ID']
-    result_df = pd.DataFrame(columns=columns)
 
-    # Iterate through the dictionary and append rows to the DataFrame
-    for key1, key2 in output_dict:
-        # Determine which key is 'FlightNumber' and which is 'CUSTOMER_ID'
-        if key1[0].isalpha():
-            flight_number, seat, customer_id = key2.split('_')[0], key2.split('_')[1], key1
-        else:
-            flight_number, seat, customer_id = key1.split('_')[0], key1.split('_')[1], key2
 
-        # Append the row to the DataFrame
-        result_df = pd.concat([result_df, pd.DataFrame([{'FlightNumber': flight_number, 'Seat': seat, 'CUSTOMER_ID': customer_id}])], ignore_index=True)
-
-    return result_df    # Create an empty DataFrame with the desired columns
-    columns = ['FlightNumber', 'CUSTOMER_ID']
-    result_df = pd.DataFrame(columns=columns)
-    rows_to_append = []
-    # Iterate through the dictionary and append rows to the DataFrame
-    for key1, key2 in output_dict:
-        # Determine which key is 'FlightNumber' and which is 'CUSTOMER_ID'
-        if key1[0].isalpha():
-            flight_number, customer_id = key2, key1
-        else:
-            flight_number, customer_id = key1, key2
-
-        # Append the row to the DataFrame
-        # Append the row to the list
-        rows_to_append.append({'FlightNumber': flight_number, 'CUSTOMER_ID': customer_id})
-
-    # Concatenate the list of rows to the DataFrame
-    result_df = pd.concat([result_df, pd.DataFrame(rows_to_append)], ignore_index=True)
-
-    return result_df
