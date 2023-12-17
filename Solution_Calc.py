@@ -50,4 +50,6 @@ def create_weighted_bipartite_graph(passengers, flights, upgrade_class=False, do
     
     return G
 
-def(passengers, flights, upgrade_class=False, downgrade_class=False):
+def returnSolution(passengers, flights, upgrade_class=False, downgrade_class=False):
+    graph = create_weighted_bipartite_graph(passengers, flights, upgrade_class=False, downgrade_class=False)
+    return(solve_weighted_bipartite(graph))

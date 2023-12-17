@@ -15,3 +15,5 @@ matched_flights_df = MatchFlights(CancelledFlightDep_Key)
 
 ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key)
 print(ranked_flights_df)
+
+print(returnSolution(ranked_passengers_df.head(), ranked_flights_df.head(), upgrade_class=False, downgrade_class=False))
