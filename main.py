@@ -52,7 +52,7 @@ user_input = input("Do you want to email the reaccomodations to the passengers? 
 if user_input in ['yes', 'y']:
     print('Select the solution set to use')
     solution_choice = choose_folder('Results/')
-    print(f"The best solution set is: {best_solution}")
+    email_reaccomodations(solution_choice)
 else:
     print("Reaccomodation emails skipped")
 
