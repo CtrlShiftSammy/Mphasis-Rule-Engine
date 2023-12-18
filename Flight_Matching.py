@@ -57,6 +57,7 @@ def returnmMatchedRankedFlights(DEP_KEY, ruleProfile):
 
     # Add a new column 'Rating' to the matched_flights_df
     matched_flights_df['Flight_Rating'] = 0
+    matched_flights_df['Flight_Quality_Grade'] = 'D'
 
     selected_flights_df = pd.DataFrame(columns=matched_flights_df.columns)
     insert_index = 0
@@ -66,12 +67,15 @@ def returnmMatchedRankedFlights(DEP_KEY, ruleProfile):
         flight_scoring_rules_df = load_rules_from_file('Rules/'+ruleProfile+'/Flight_Scoring.csv')
         flight_selection_rules_df = load_rules_from_file('Rules/'+ruleProfile+'/Flight_Selection.csv')
         row_df = pd.DataFrame([list(row)], columns=matched_flights_df.columns)
-        rating = rate_flights(CancelledFlightINV, row_df, flight_scoring_rules_df)  # Pass the flight information to the function
+        rating, grade = rate_flights(CancelledFlightINV, row_df, flight_scoring_rules_df)  # Pass the flight information to the function
         
         if select_flight(CancelledFlightINV, row_df, find_downline_connections(DEP_KEY, ruleProfile), flight_selection_rules_df):
             selected_flights_df = pd.concat([selected_flights_df, row_df], ignore_index=True)
             matched_flights_df.loc[insert_index, 'Flight_Rating'] = rating
             selected_flights_df.loc[insert_index, 'Flight_Rating'] = rating
+            
+            selected_flights_df.loc[insert_index, 'Flight_Quality_Grade'] = grade
+            
             insert_index = insert_index + 1
             #print(rating)
 

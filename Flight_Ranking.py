@@ -74,7 +74,17 @@ def rate_flights(CurrentFlight_Sched, AlternateFlight_Sched, rules_df):
         score += rating * mask
         # print(index)
     #print(score)   
-    return score
+
+    grade_rules = [
+        {'grade': 'A', 'condition': score >= 200},
+        {'grade': 'B', 'condition': score >= 180},
+        {'grade': 'C', 'condition': score >= 150},
+        {'grade': 'D', 'condition': True}  # Default grade if none of the conditions are met
+    ]
+
+    grade = next(rule['grade'] for rule in grade_rules if rule['condition'])
+
+    return score, grade
 
 def RateFlights(CurrentFlight_Sched, AlternateFlight_Sched):
     # ImpactedPassengers = returnImpactedPassengers(DEP_KEY)
@@ -84,7 +94,7 @@ def RateFlights(CurrentFlight_Sched, AlternateFlight_Sched):
     rules_df = load_rules_from_file(rules_file_path)
 
     # Call the function to rate passengers
-    score = rate_flights(CurrentFlight_Sched, AlternateFlight_Sched, rules_df)
+    score, grade = rate_flights(CurrentFlight_Sched, AlternateFlight_Sched, rules_df)
 
     # Display the DataFrame with passenger ratings
-    return score
+    return score, grade
