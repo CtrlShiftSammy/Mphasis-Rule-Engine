@@ -21,6 +21,13 @@ def load_rules_from_file(file_path):
     return rules_df
 
 def select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df):
+    changed_inventory_id = ChangedFlight_Sched.iloc[0]['InventoryId']
+    alter_inventory_id = AlterFlight_Sched.iloc[0]['InventoryId']
+
+    # Compare the inventory ids
+    if changed_inventory_id == alter_inventory_id:
+        return False
+
     ChangedFlight_Sched['DepartureDateTime'] = pd.to_datetime(ChangedFlight_Sched['DepartureDateTime'])
     ChangedFlight_Sched['ArrivalDateTime'] = pd.to_datetime(ChangedFlight_Sched['ArrivalDateTime'])
     ChangedFlight_Sched = ChangedFlight_Sched.sort_values(by=['DepartureDateTime'])
@@ -36,7 +43,9 @@ def select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df):
         variable = rule['Variable']
         value = int(rule['Value'])
         constraints[variable] = value
-    
+
+    #cancelled_flight_df = load_rules_from_file('Rules/'+ruleProfile+'/cancelled_flight.csv')
+
     DIFF_DEP = (AlterFlight_Sched['ArrivalDateTime'].iloc[0] - ChangedFlight_Sched['ArrivalDateTime'].iloc[0]).total_seconds()/3600
     #print(DIFF_DEP, AlterFlight_Sched['ArrivalDateTime'].iloc[0], ChangedFlight_Sched['ArrivalDateTime'].iloc[0])
     #print(DIFF_DEP, constraints['MAX_DEPARTURE_DELAY'])
@@ -98,16 +107,17 @@ def select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df):
             return False
 
     return True
+# 
+# def SelectFlight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight): # If there is no nextFlight pass None
+# 
+#     rules_file_path = 'Rules/rule_profile1/Flight_selection.csv'
+#     rules_df = load_rules_from_file(rules_file_path)
+#     score = select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df)
+#     return score
 
-def SelectFlight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight): # If there is no nextFlight pass None
+def find_downline_connections(DEP_KEY, ruleProfile, rated_passengers_df):
+    #rated_passengers_df = RankPassengers(DEP_KEY, ruleProfile)
 
-    rules_file_path = 'Rules/rule_profile1/Flight_selection.csv'
-    rules_df = load_rules_from_file(rules_file_path)
-    score = select_flight(ChangedFlight_Sched, AlterFlight_Sched, nextFlight, rules_df)
-    return score
-
-def find_downline_connections(DEP_KEY, ruleProfile):
-    rated_passengers_df = RankPassengers(DEP_KEY, ruleProfile)
     passenger_row = rated_passengers_df[rated_passengers_df['DEP_KEY'].astype(str).str.startswith(DEP_KEY)]
 
     if not passenger_row.empty:

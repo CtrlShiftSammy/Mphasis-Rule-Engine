@@ -108,7 +108,7 @@ def get_next_fileset_directory(base_directory='Results'):
         latest_fileset = max(map(lambda x: int(x.split('SolutionFileset')[-1]), fileset_directories))
         return os.path.join(base_directory, f'SolutionFileset{latest_fileset + 1}')
 
-def produce_solution_fileset(ranked_passengers_df, ranked_flights_df, solution_df, reaccomodation_df, unreaccommodated_passengers_df):
+def produce_solution_fileset(cancelled_flight_df, ranked_passengers_df, ranked_flights_df, solution_df, reaccomodation_df, unreaccommodated_passengers_df):
     # Get the next fileset directory
     results_directory = get_next_fileset_directory()
 
@@ -118,6 +118,7 @@ def produce_solution_fileset(ranked_passengers_df, ranked_flights_df, solution_d
     print("Saving Solution Filesets in directory ",results_directory)
 
     # Store dataframes in CSV files
+    cancelled_flight_df.to_csv(os.path.join(results_directory, 'cancelled_flight.csv'), index=False)
     ranked_passengers_df.to_csv(os.path.join(results_directory, 'ranked_passengers.csv'), index=False)
     ranked_flights_df.to_csv(os.path.join(results_directory, 'ranked_flights.csv'), index=False)
     solution_df.to_csv(os.path.join(results_directory, 'solution.csv'), index=False)

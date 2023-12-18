@@ -6,7 +6,7 @@ from Flight_Matching import *
 from Flight_Ranking import *
 from Flight_Selection import *
 from Solution_Calc import *
-
+from Solution_Ranking import *
 
 defaultCancelledFlightDep_Key = 'ZZ20240515AMDHYD2223'
 user_input = input("Enter the Departure Key of the Flight:")
@@ -22,10 +22,11 @@ ruleProfile = choose_folder()
 
 ranked_passengers_df = RankPassengers(CancelledFlightDep_Key, ruleProfile)
 print("Cancelled Flight DEP_KEY = ", CancelledFlightDep_Key)
+cancelled_flight_df = returnFlight(CancelledFlightDep_Key)
 print("Using Agent Rule Profile = ", ruleProfile)
 
 print("Ranking Passengers...")
-ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key, ruleProfile)
+ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key, ruleProfile, ranked_passengers_df, cancelled_flight_df)
 
 print("Calculating and Ranking Alternate Flights...")
 solution_df = returnSolution(ranked_passengers_df, ranked_flights_df, upgrade_class=False, downgrade_class=False)
@@ -35,6 +36,13 @@ reaccomodation_df = add_details_columns(solution_df, ranked_passengers_df, ranke
 
 unreaccommodated_passengers_df = find_unreaccommodated_passengers(ranked_passengers_df, reaccomodation_df)
 
-produce_solution_fileset(ranked_passengers_df, ranked_flights_df, solution_df, reaccomodation_df, unreaccommodated_passengers_df)
+produce_solution_fileset(cancelled_flight_df, ranked_passengers_df, ranked_flights_df, solution_df, reaccomodation_df, unreaccommodated_passengers_df)
 
+user_input = input("Do you want to find the best solution set? (yes/no): ").lower()
+
+if user_input in ['yes', 'y']:
+    best_solution = calculate_rating()
+    print(f"The best solution set is: {best_solution}")
+else:
+    print("Solution ranking skipped")
 
