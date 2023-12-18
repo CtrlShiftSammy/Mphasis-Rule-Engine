@@ -18,7 +18,7 @@ if not user_input:
 
 choose_sched_change(CancelledFlightDep_Key)
 
-ruleProfile = choose_folder()
+ruleProfile = choose_folder('Rules/')
 
 ranked_passengers_df = RankPassengers(CancelledFlightDep_Key, ruleProfile)
 print("Cancelled Flight DEP_KEY = ", CancelledFlightDep_Key)
@@ -45,4 +45,15 @@ if user_input in ['yes', 'y']:
     print(f"The best solution set is: {best_solution}")
 else:
     print("Solution ranking skipped")
+
+
+user_input = input("Do you want to email the reaccomodations to the passengers? (yes/no): ").lower()
+
+if user_input in ['yes', 'y']:
+    print('Select the solution set to use')
+    solution_choice = choose_folder('Results/')
+    print(f"The best solution set is: {best_solution}")
+else:
+    print("Reaccomodation emails skipped")
+
 

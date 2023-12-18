@@ -3,25 +3,33 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# Reading the CSV files containing rescheduled passenger data and unaccommodated passengers
+# Reading the CSV files containing rescheduled passenger data, unaccommodated passengers, and ranked flights
 rescheduled_passengers_file = 'Results/SolutionFileset1/reaccomodation.csv'
 unaccommodated_passengers_file = 'Results/SolutionFileset1/exception.csv'
+ranked_flights_file = 'Results/SolutionFileset1/ranked_flights.csv'
 
 # Read CSV files using Pandas
 rescheduled_passengers = pd.read_csv(rescheduled_passengers_file)
 unaccommodated_passengers = pd.read_csv(unaccommodated_passengers_file)
+ranked_flights = pd.read_csv(ranked_flights_file)
 
 # Email configurations
 sender_email = 'airline.rescheduleinfo.72@gmail.com'
 password = 'wiimiairkxzipzfk'
 
 # Function to send email to passengers
-def send_email(recipient, subject, body):
+def send_email(recipient, subject, body, attachment_path=None):
     message = MIMEMultipart()
     message['From'] = sender_email
     message['To'] = recipient
     message['Subject'] = subject
     message.attach(MIMEText(body, 'plain'))
+
+    if attachment_path:
+        # Attach the ranked_flights.csv file
+        attachment = open(attachment_path, 'rb')
+        message.attach(MIMEText(attachment.read(), 'csv'))
+        attachment.close()
 
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -43,10 +51,11 @@ for index, passenger in rescheduled_passengers.iterrows():
     
     # Composing the email content
     email_subject = f"Flight Rescheduling Information for Passenger {first_name} {last_name}"
-    email_body = f"Dear {first_name} {last_name},\n\nWe regret to inform you that your flight has been rescheduled. Below are the updated details:\n\n{new_schedule_info}\n\nSincerely,\nThe Airline Team"
+    email_body = f"Dear {first_name} {last_name},\n\nWe regret to inform you that your flight has been rescheduled. Below are the updated details:\n\n{new_schedule_info}\n\n"
+    email_body += f"These are the available alternative flights you can choose from:\n{ranked_flights[['FlightNumber', 'AircraftType', 'DepartureDate', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Flight_Rating', 'Flight_Quality_Grade']]}\n\nSincerely,\nThe Airline Team"
 
-    # Sending email to each passenger
-    send_email(passenger['CONTACT_EMAIL'], email_subject, email_body)
+    # Sending email to each passenger with the ranked_flights.csv attachment
+    send_email(passenger['CONTACT_EMAIL'], email_subject, email_body, ranked_flights_file)
 
 # Sending emails to unaccommodated passengers
 for index, passenger in unaccommodated_passengers.iterrows():
@@ -57,7 +66,9 @@ for index, passenger in unaccommodated_passengers.iterrows():
     
     # Composing the email content
     email_subject = f"Unable to Accommodate Passenger {first_name} {last_name}"
-    email_body = f"Dear {first_name} {last_name},\n\nWe regret to inform you that we were unable to accommodate you after the reschedule.\n\nSincerely,\nThe Airline Team"
+    email_body = f"Dear {first_name} {last_name},\n\nWe regret to inform you that we were unable to accommodate you after the reschedule.\n\n"
+    email_body += f"These are the available alternative flights you can choose from:\n{ranked_flights[['FlightNumber', 'AircraftType', 'DepartureDate', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Flight_Rating', 'Flight_Quality_Grade']]}\n\nSincerely,\nThe Airline Team"
 
-    # Sending email to each unaccommodated passenger
-    send_email(passenger['CONTACT_EMAIL'], email_subject, email_body)
+    # Sending email to each unaccommodated passenger with the ranked_flights.csv attachment
+    send_email(passenger['CONTACT_EMAIL'], email_subject, email_body, ranked_flights_file)
+    

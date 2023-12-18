@@ -13,8 +13,7 @@ def get_user_input(prompt, default_value):
     user_input = input(f"{prompt} (Default: {default_value}): ")
     return user_input.strip() if user_input else default_value
 
-def choose_folder():
-    directory = 'Rules/'
+def choose_folder(directory):
     folders = list_folders(directory)
     if not folders:
         print("No folders found in the specified directory.")
