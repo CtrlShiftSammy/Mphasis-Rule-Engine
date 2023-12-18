@@ -17,7 +17,6 @@ print("Using Agent Rule Profile = ", ruleProfile)
 
 print("Ranking Passengers...")
 ranked_flights_df = returnmMatchedRankedFlights(CancelledFlightDep_Key, ruleProfile)
-columns = ['InventoryId', 'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Flight_Rating']
 
 print("Calculating and Ranking Alternate Flights...")
 solution_df = returnSolution(ranked_passengers_df, ranked_flights_df, upgrade_class=False, downgrade_class=False)

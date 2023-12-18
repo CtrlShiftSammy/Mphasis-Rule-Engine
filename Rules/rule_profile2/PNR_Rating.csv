@@ -1,0 +1,29 @@
+Conditions,Rating,Variable
+SPECIAL_NAME_CD1 == 'INF', 200,.
+SPECIAL_NAME_CD1 == 'INS', 200,.
+SPECIAL_NAME_CD1 == 'UNMR', 200,.
+SPECIAL_NAME_CD1 == 'CHLD', 200,.
+SPECIAL_NAME_CD1 == 'ADT', 200,.
+SPECIAL_NAME_CD2 == 'NSST', 200,.
+SPECIAL_NAME_CD2 == 'NRPS', 200,.
+SPECIAL_NAME_CD2 == 'NRSA', 200,.
+SSR_CODE_CD1 == 'BLND', 200,.
+SSR_CODE_CD1 == 'DEAF', 200,.
+SSR_CODE_CD1 == 'EXST', 200,.
+SSR_CODE_CD1 == 'MEAL', 200,.
+SSR_CODE_CD1 == 'WCHR', 200,.
+SSR_CODE_CD1 == 'WCHS', 200,.
+SSR_CODE_CD1 == 'WCHC', 200,.
+SSR_CODE_CD1 == 'LANG', 200,.
+SSR_CODE_CD1 == 'MAAS', 200,.
+COS_CD == 'FirstClass', 2000,.
+COS_CD == 'BusinessClass', 1700,.
+COS_CD == 'PremiumEconomyClass', 1600,.
+COS_CD == 'EconomyClass', 1500,.
+PAX_CNT > 1,100,PAX_CNT
+DL_Conn >= 1,100,DL_Conn
+PAX_CNT > 1,500,.
+TierLevel == 'Presidential Platinum',2000,.
+TierLevel == 'Platinum',1800,.
+TierLevel == 'Gold',1600,.
+TierLevel == 'Silver',1500,.
