@@ -35,7 +35,7 @@ def create_weighted_bipartite_graph(passengers, flights, upgrade_class=False, do
     # Add nodes for seats with the same seat type as flights
     for _, flight in flights.iterrows():
         for seat_type in ["A", "B", "C", "D"]:
-            for seat_number in range(1, flight[seat_type] + 1):
+            for seat_number in range(1, int(flight[seat_type]) + 1):
                 seat_name = f"{flight['FlightNumber']}_{seat_type}{seat_number}_{flight['InventoryId']}"
                 G.add_node(seat_name, bipartite=1, seat_type=seat_type)  # bipartite=1 represents seats
 
@@ -83,7 +83,7 @@ def add_details_columns(input_df, customer_details_df, flight_details_df):
     # Select and reorder columns
     selected_columns = [
         'CUSTOMER_ID', 'LAST_NAME', 'FIRST_NAME', 'CONTACT_PH_NUM', 'CONTACT_EMAIL', 'FlightNumber', 'Seat', 'InventoryId', 
-        'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Passenger_Rating', 'Flight_Rating'
+        'Dep_Key', 'AircraftType', 'DepartureDateTime', 'ArrivalDateTime', 'DepartureAirport', 'ArrivalAirport', 'Passenger_Rating', 'Flight_Rating', 'Flight_Quality_Grade'
     ]
     
     result_df = result_df[selected_columns]
