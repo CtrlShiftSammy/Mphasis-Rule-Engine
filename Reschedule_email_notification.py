@@ -2,6 +2,14 @@ import pandas as pd
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
+
+# Email configurations
+sender_email = 'airline.rescheduleinfo.72@gmail.com'
+password = 'wiimiairkxzipzfk'
+
 
 # Function to send email to passengers
 def send_email(recipient, subject, body, attachment_path=None):
@@ -14,7 +22,14 @@ def send_email(recipient, subject, body, attachment_path=None):
     if attachment_path:
         # Attach the ranked_flights.csv file
         attachment = open(attachment_path, 'rb')
-        message.attach(MIMEText(attachment.read(), 'csv'))
+
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename="{attachment_path}"')
+        
+        message.attach(part)
+
         attachment.close()
 
     try:
@@ -28,7 +43,7 @@ def send_email(recipient, subject, body, attachment_path=None):
         print(f"Failed to send email to {recipient}. Error: {str(e)}")
 
 
-def email_reaccomodations(solution_choice)
+def email_reaccomodations(solution_choice):
 
     # Reading the CSV files containing rescheduled passenger data, unaccommodated passengers, and ranked flights
     rescheduled_passengers_file = 'Results/'+solution_choice+'/reaccomodation.csv'
@@ -39,10 +54,6 @@ def email_reaccomodations(solution_choice)
     rescheduled_passengers = pd.read_csv(rescheduled_passengers_file)
     unaccommodated_passengers = pd.read_csv(unaccommodated_passengers_file)
     ranked_flights = pd.read_csv(ranked_flights_file)
-
-    # Email configurations
-    sender_email = 'airline.rescheduleinfo.72@gmail.com'
-    password = 'wiimiairkxzipzfk'
 
 
     # Sending emails to rescheduled passengers

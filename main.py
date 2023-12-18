@@ -7,7 +7,7 @@ from Flight_Ranking import *
 from Flight_Selection import *
 from Solution_Calc import *
 from Solution_Ranking import *
-
+from Reschedule_email_notification import *
 defaultCancelledFlightDep_Key = 'ZZ20240515AMDHYD2223'
 user_input = input("Enter the Departure Key of the Flight:")
 CancelledFlightDep_Key = user_input if user_input else defaultCancelledFlightDep_Key
